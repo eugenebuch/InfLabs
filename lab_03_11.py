@@ -40,10 +40,10 @@ def huffman_encode(s):
             heapq.heappush(h, (value1 + value2, count, Struct(left, right))) #Непосредственный алгоритм Хаффмана (попарное "Склеивание" элементов начиная с меньшей пары)
             count += 1 #По факту - двоичное дерево в текстовом формате
         code = {}
-        if h: #Проверка дерева на целостность и законченность 
+        if h: #Проверка дерева на целостность и законченность + передача на выход
             [(_value, _count, root)] = h
             root.walk(code, "")
-        
+        print(code)
         return code
     except:
         pass
@@ -67,42 +67,48 @@ def huffman_decode(encoded, code):
         pass
 
 def encodeLZ(in_):
-    history = ''
-    _buffer = ''
-    output = []
-    letter = 0
-    while 1:
-        if in_[letter] in history:
-            for i in range(letter, len(in_)):
-                _buffer += in_[i]
-                if _buffer not in history:
-                    break
-            cnt = letter
-            if len(_buffer[:-1]) == 0: #костыль
-                cnt = 0
-            output.append([cnt - history.find(_buffer[:-1]), len(_buffer[:-1]), \
-                            _buffer[-1]])
-        else:
-            history += in_[letter]
-            output.append([0, 0, in_[letter]])
-        history += _buffer
-        letter += len(_buffer[:-1])
+    try:
+        history = ''
         _buffer = ''
-        if letter == len(in_[:-1]):
-            break
-        letter += 1
-    return output
+        output = []
+        letter = 0
+        while 1:
+            if in_[letter] in history:
+                for i in range(letter, len(in_)):
+                    _buffer += in_[i]
+                    if _buffer not in history:
+                        break
+                cnt = letter
+                if len(_buffer[:-1]) == 0: #костыль
+                    cnt = 0
+                output.append([cnt - history.find(_buffer[:-1]), len(_buffer[:-1]), \
+                                _buffer[-1]])
+            else:
+                history += in_[letter]
+                output.append([0, 0, in_[letter]])
+            history += _buffer
+            letter += len(_buffer[:-1])
+            _buffer = ''
+            if letter == len(in_[:-1]):
+                break
+            letter += 1
+        return output
+    except:
+        pass
 
 def decodeLZ(in_):
-    output = ''
-    _buffer = ''
-    for i in range(len(in_)):
-        _x = in_[i]
-        if _x[0] == 0:
-            output += _x[2]
-        else:
-            output += output[len(output) - _x[0]: len(output) - _x[0] + _x[1]] + _x[2]
-    return output
+    try:
+        output = ''
+        _buffer = ''
+        for i in range(len(in_)):
+            _x = in_[i]
+            if _x[0] == 0:
+                output += _x[2]
+            else:
+                output += output[len(output) - _x[0]: len(output) - _x[0] + _x[1]] + _x[2]
+        return output
+    except:
+        pass
 
 '''
 Интерфейс
@@ -113,28 +119,33 @@ def main():
         code = huffman_encode(s) #Словарь с кодом каждого символа
         if code:
             print('Huffman: True')
-            print('LZ: True')
             encoded = "".join(code[key] for key in s)
             with open('fileOut.txt', 'w') as v:
                 v.write('\t\t\tАЛГОРИТМ ХАФФМАНА:' + '\n' + \
                         'Начальная строка: ' + s + '\n' + \
                         'Закодированная строка: ' + encoded + '\n' + \
                         'Декодированная строка: ' + huffman_decode(encoded, code) + '\n' + \
-                        'Коэффициент сжатия данных: ' + str(len(encoded) / len(s)) + '\n')
+                        'Коэффициент сжатия данных: {:.2%}'.format(len(s) / len(encoded)) + '\n')
                 for key in sorted(code):
                     v.write("'{}': {}\n".format(key, code[key]))
                 v.write('\n\n')
-                code = encodeLZ(s)
+        else:
+            print('Huffman False')
+        
+        with open('fileOut.txt', 'a') as v:
+            code = encodeLZ(s)
+            if code:
+                print('LZ: True')
                 coded = ''
                 for i in range(len(code)):
-                    coded += ('(' + str(code[i][0]) + ', ' + str(code[i][1]) + ', ' + code[i][2] + ')')
+                     coded += ('(' + str(code[i][0]) + ', ' + str(code[i][1]) + ', ' + code[i][2] + ')')
                 v.write('\t\t\tАЛГОРИТМ ЛЕМПЕЛЯ-ЗИВА:' + '\n' + \
                         'Начальная строка: ' + s + '\n' + \
                         'Закодированная строка: ' + coded + '\n' + \
                         'Декодированная строка: ' + decodeLZ(code) + '\n' + \
-                        'Коэффициент сжатия: ' + str(len(code)/len(s)))
-        else:
-            print('Huffman False')
-            print('LZ: False')
-                        
+                        'Коэффициент сжатия: {:.2%}'.format(len(s)/len(code)))
+            else:
+                print('LZ: False')
 main()
+
+
