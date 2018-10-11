@@ -1,20 +1,17 @@
-import heapq #Кучи. Почему они? Потому что благодаря им можно легко обратиться к наименьшему элементу массива (или сразу к нескольким).
+import heapq 
 from collections import namedtuple
-
-#ГЛАВНЫЙ СМЫСЛ АЛГОРИТМА ХАФФМАНА - НИ ОДИН СИМВОЛ НЕ МОЖЕТ БЫТЬ ПРЕФИКСОМ ДРУГОГО!
-#ГЛАВНЫЙ СМЫСЛ АЛГОРИТМА LZ77 - СКОЛЬЗЯЩЕЕ ОКНО ПО ИСХОДНОЙ СТРОКЕ!
 
 class Struct(namedtuple("Struct", ["left", "right"])):
     '''
-    Двоичное дерево. Выбор между правой (1) и левой (0) веткой. Получает данные для заполнения дерева с класса Leaf.
+    Binnary tree struct.
     '''
     def walk(self, code, acc):
-        self.left.walk(code, acc + "0") #Основной момент кодировки, бинарное представление элементов, а именно вписывание
-        self.right.walk(code, acc + "1") #В код элемента "0" или "1" в зависимости от пути(выборы между право и лево) от корня дерева до элемента
+        self.left.walk(code, acc + "0") 
+        self.right.walk(code, acc + "1") 
 
 class Pos(namedtuple("Pos", ["key"])):
     '''
-    Определяет позицию элемента в дереве (в прямом смысле)
+    Elem. position in tree
     '''
     def walk(self, code, acc):
         code[self.key] = acc or "0"
@@ -23,24 +20,24 @@ def huffman_encode(s):
     try:
         h = []
         dic = {}
-        for letter in s: #Счетчик вхождений элемента в строку для словаря
+        for letter in s: 
             if letter not in dic: 
                 dic[letter] = 1
             else:
                 dic[letter] += 1
-        dic = sorted(dic.items(), key = lambda x: x[1], reverse = True) #Сортировка словаря по значению
+        dic = sorted(dic.items(), key = lambda x: x[1], reverse = True) 
         for key, value in dic:
-            h.append((value, len(h), Pos(key))) #Отправление элемента на позиционирование в дереве
+            h.append((value, len(h), Pos(key))) 
         heapq.heapify(h)
         count = len(h)
         while len(h) > 1:
             value1, _count1, left = heapq.heappop(h) 
             value2, _count2, right = heapq.heappop(h) 
         
-            heapq.heappush(h, (value1 + value2, count, Struct(left, right))) #Непосредственный алгоритм Хаффмана (попарное "Склеивание" элементов начиная с меньшей пары)
-            count += 1 #По факту - двоичное дерево в текстовом формате
+            heapq.heappush(h, (value1 + value2, count, Struct(left, right))) 
+            count += 1 
         code = {}
-        if h: #Проверка дерева на целостность и законченность + передача на выход
+        if h: 
             [(_value, _count, root)] = h
             root.walk(code, "")
         print(code)
@@ -50,7 +47,7 @@ def huffman_encode(s):
 
 def huffman_decode(encoded, code):
     '''
-    Однозначное декодирование. Ничего интересного, просто обращение к ключу и расшифровка по первой попавшейся комбинации.
+    Decoding
     '''
     try:
         sx = []
@@ -111,12 +108,12 @@ def decodeLZ(in_):
         pass
 
 '''
-Интерфейс
+Interface
 '''
 def main():
     with open('fileIn.txt', 'r') as f:
         s = "".join(f.readlines()).replace("\n", "")
-        code = huffman_encode(s) #Словарь с кодом каждого символа
+        code = huffman_encode(s) 
         if code:
             print('Huffman: True')
             encoded = "".join(code[key] for key in s)
