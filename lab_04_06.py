@@ -1,5 +1,6 @@
 import random
 # test: 100100101110001
+# test: 10011010
 
 class HammingEncoder:
     def __init__(self, string, dataBits):
@@ -32,7 +33,7 @@ class HammingEncoder:
     def encode(self):
         self.encoded = '00' + self.string[:]
         for i in range(self.controlBits):
-            if i > 1: self.encoded = self.encoded[:2**i] + '0' + self.encoded[2**i:]
+            if i > 1: self.encoded = self.encoded[:2**i - 1] + '0' + self.encoded[2**i - 1:]
         self.encoded = list(self.encoded)
         HammingEncoder.routine(self)
         for i in range(len(self.contr)):
