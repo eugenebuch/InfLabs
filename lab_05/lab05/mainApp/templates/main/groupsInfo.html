@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Группы</title>
+</head>
+<body>
+	<table style="width:50%;height:100vh;border-collapse:collapse" border="2">
+    <tr>
+        <td>Группа</td>
+        <td>Табельный номер</td>
+        <td>ФИО</td>
+        <td>Стипендия</td>
+    </tr>
+    {% for group in groups %}
+    {% for student in group.students %}
+    <tr>
+        <td>{{group.name}}</td>
+        <td>{{student.num}}</td>
+        <td>{{student.name}}</td>
+        <td>{{student.stipuxa}}</td>
+    </tr>
+    {% endfor %}
+    {% endfor %}
+	</table>
+</body>
+</html>

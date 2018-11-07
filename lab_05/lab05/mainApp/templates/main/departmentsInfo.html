@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Кафедры</title>
+</head>
+<body>
+	{% for cafedra in cafedras %}
+	ID: {{cafedra.id}}<br>
+	Кафедра: {{cafedra.name}}<br>
+	Зав. кафедры: {{cafedra.main.name}} ({{cafedra.main.num}})<br>
+	Преподаватели:
+	<ol>
+	    {% for prep in cafedra.squad %}
+	    <li>{{prep.name}} ({{prep.num}}, {{prep.deal}})</li>
+	    {% endfor %}
+	</ol>
+	Образовательные программы:
+	<ul>
+	    {% for prog in cafedra.programms %}
+	    <li>{{prog.id}} ({{prog.name}}, {{prog.discipline}})</li>
+	    {% endfor %}
+	</ul>
+	<hr>
+	{% endfor %}
+</body>
+</html>

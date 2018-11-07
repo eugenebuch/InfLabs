@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Структура Универа</title>
+	<style type="text/css">
+		body {
+			margin: 0;
+			padding: 0;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 100%;
+			height: 100vh;
+		}
+	</style>
+</head>
+<body>
+	<pre>
+	Университет (Ректор: {{data.rector}})
+	|_Административные подразделения:
+	{% for structure in data.struct.administrative %}| |_{{structure.name}} ({{structure.id}}, {{structure.main.name}})
+	{% endfor %}|
+	|
+	|_Научно-образовательные подразделения:
+	{% for mega_fac in data.struct.science_edu %}  |_{{mega_fac.name}} ({{mega_fac.id}}, {{mega_fac.main.name}})
+	{% for fac in mega_fac.facs %}  |  |_{{fac.name}} ({{fac.id}}, {{fac.main.name}})
+	{% for cafedra in fac.cafedras %}  |  | |_{{cafedra.name}} ({{cafedra.id}}, {{cafedra.main.name}})
+	{% endfor %}{% endfor %}{% endfor %}
+	</pre>
+
+</body>
+</html>

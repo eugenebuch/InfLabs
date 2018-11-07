@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Инфа о прогах</title>
+</head>
+<body>
+	<pre>
+	{% for prog in progs %}
+		Номер программы: {{prog.id}}
+		Название программы: {{prog.name}}
+		Дисциплина: {{prog.discipline}}
+	{% for k,v in prog.year.items %}
+		Год обучения: {{k}}
+		Кол-во групп: {{v|length}}
+		
+	{% endfor %}
+	
+
+	{% endfor %}
+	</pre>
+</body>
+</html>
